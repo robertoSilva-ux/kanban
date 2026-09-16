@@ -1,6 +1,13 @@
 import type { NextFunction, Request, Response } from 'express';
 import { NotImplementedError } from './errors.js';
-import { InvalidCardColumnError, InvalidCardTitleError, InvalidPriorityError } from '../cards/errors.js';
+import {
+  CardNotFoundError,
+  DuplicateCardTitleError,
+  InvalidCardColumnError,
+  InvalidCardTitleError,
+  InvalidPriorityError,
+  WipLimitExceededError,
+} from '../cards/errors.js';
 import { ColumnNotFoundError, InvalidColumnNameError } from '../boards/errors.js';
 
 /**
@@ -16,6 +23,9 @@ const STATUS_BY_ERROR = new Map<Function, number>([
   [InvalidPriorityError, 400],
   [InvalidColumnNameError, 400],
   [ColumnNotFoundError, 404],
+  [CardNotFoundError, 404],
+  [DuplicateCardTitleError, 409],
+  [WipLimitExceededError, 409],
 ]);
 
 // Os 4 parâmetros são obrigatórios: é assim que o Express reconhece uma

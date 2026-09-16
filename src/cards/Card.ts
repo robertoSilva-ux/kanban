@@ -1,6 +1,5 @@
 import { randomUUID } from 'node:crypto';
 import { InvalidCardColumnError, InvalidCardTitleError, InvalidPriorityError } from './errors.js';
-import { NotImplementedError } from '../shared/errors.js';
 
 export type CardPriority = 'baixa' | 'média' | 'alta';
 
@@ -108,24 +107,19 @@ export class Card {
     return this._columnId;
   }
 
-  /**
-   * TODO (Atividade 2): mover o cartão para outra coluna. Pontos a
-   * decidir: quem valida se `newColumnId` existe no quadro (o Card não
-   * conhece o Board) e como aplicar o limite de WIP da coluna destino
-   * (Atividade 5) sem o Card também precisar conhecer o Board.
-   */
-  changeColumn(_newColumnId: string): void {
-    throw new NotImplementedError('Card#changeColumn');
+  changeColumn(newColumnId: string): void {
+    this._columnId = Card.validateColumnId(newColumnId);
   }
 
-  /** TODO (Atividade 3): renomear e/ou trocar a descrição do cartão. */
-  rename(_newTitle: string, _newDescription?: string): void {
-    throw new NotImplementedError('Card#rename');
+  rename(newTitle: string, newDescription?: string): void {
+    this._title = Card.validateTitle(newTitle);
+    if (newDescription !== undefined) {
+      this._description = newDescription.trim();
+    }
   }
 
-  /** TODO (Atividade 3): trocar a prioridade do cartão. */
-  changePriority(_priority: CardPriority): void {
-    throw new NotImplementedError('Card#changePriority');
+  changePriority(priority: CardPriority): void {
+    this._priority = Card.validatePriority(priority);
   }
 
   toSnapshot(): CardSnapshot {

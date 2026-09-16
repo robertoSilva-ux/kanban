@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import { Board } from '../../../src/boards/Board.js';
 import { Column } from '../../../src/boards/Column.js';
 import { ColumnNotFoundError } from '../../../src/boards/errors.js';
-import { NotImplementedError } from '../../../src/shared/errors.js';
 
 function buildBoard(): Board {
   const columns = [
@@ -46,12 +45,27 @@ describe('Board#hasColumn', () => {
 });
 
 describe('Board#addColumn', () => {
-  it('ainda não está implementado (Atividade 7)', () => {
+  it('adiciona uma nova coluna com a próxima ordem e id gerado', () => {
     const board = buildBoard();
 
-    expect(() => board.addColumn('Em Revisão')).toThrow(NotImplementedError);
+    const column = board.addColumn('Em Revisão');
+
+    expect(column.name).toBe('Em Revisão');
+    expect(column.order).toBe(3);
+    expect(column.wipLimit).toBeNull();
+    expect(board.columns).toHaveLength(3);
+    expect(board.hasColumn(column.id)).toBe(true);
+  });
+
+  it('adiciona coluna com limite de WIP', () => {
+    const board = buildBoard();
+
+    const column = board.addColumn('Em Revisão', 5);
+
+    expect(column.wipLimit).toBe(5);
   });
 });
+
 
 describe('Board#toSnapshot', () => {
   it('devolve as colunas ordenadas por order', () => {

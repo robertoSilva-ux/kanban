@@ -32,7 +32,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/3</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
@@ -101,7 +101,9 @@
 <a name='L36'></a><a href='#L36'>36</a>
 <a name='L37'></a><a href='#L37'>37</a>
 <a name='L38'></a><a href='#L38'>38</a>
-<a name='L39'></a><a href='#L39'>39</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -113,45 +115,43 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { BoardRepository } from './BoardRepository.js';
 import type { CardRepository } from '../cards/CardRepository.js';
 import type { ControllerResult } from '../shared/http.js';
-import { NotImplementedError } from '../shared/errors.js';
 import { toBoardViewModel } from './boardView.js';
 &nbsp;
 /**
  * CONTROLLER — orquestra o quadro: busca Board (boards/) e Cards (cards/),
  * pede para a View montar o "view model" e devolve o resultado pronto para
- * `routes.ts` renderizar. Repare que este Controller depende do
- * `CardRepository` do outro módulo para poder desenhar os cartões dentro
- * das colunas — é um acoplamento aferente do módulo `boards` em relação a
- * `cards` que vale discutir em sala (ver aula03.md, seção de discussão).
+ * `routes.ts` renderizar.
  */
 export class BoardController {
   constructor(
@@ -170,13 +170,19 @@ export class BoardController {
   }
 &nbsp;
   /**
-   * TODO (Atividade 7): criar uma nova coluna no quadro a partir do corpo
+   * Atividade 7: criar uma nova coluna no quadro a partir do corpo
    * da requisição (`{ name, wipLimit? }`) e redirecionar de volta para `/`.
    */
-  createColumn(_body: unknown): ControllerResult {
-    throw new NotImplementedError('BoardController#createColumn');
+  createColumn(body: unknown): ControllerResult {
+    const data = body as { name?: string; wipLimit?: string | number };
+    const board = this.boardRepository.getDefault();
+    const parsedWip = data.wipLimit ? Number(data.wipLimit) : null;
+    board.addColumn(data.name as string, parsedWip);
+    return { redirect: '/' };
   }
 }
+&nbsp;
+&nbsp;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -184,7 +190,7 @@ export class BoardController {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-09-02T01:21:52.767Z
+                at 2026-09-16T20:27:49.215Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

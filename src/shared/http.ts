@@ -9,12 +9,23 @@ import type { Response } from 'express';
  * este tipo (ou usar `res.redirect` diretamente na rota) faz parte da
  * atividade — é uma decisão de vocês, não deste template.
  */
-export interface ControllerResult {
+export interface RenderResult {
   status: number;
   view: string;
   locals: Record<string, unknown>;
 }
 
+export interface RedirectResult {
+  redirect: string;
+}
+
+export type ControllerResult = RenderResult | RedirectResult;
+
 export function respond(res: Response, result: ControllerResult): void {
+  if ('redirect' in result) {
+    res.redirect(result.redirect);
+    return;
+  }
   res.status(result.status).render(result.view, result.locals);
 }
+

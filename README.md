@@ -90,6 +90,6 @@ Dica: implementem casos de uso simples e testáveis (retornam cedo em erro, uma 
 *** Discussão obrigatória (antes de codar)
 
 1. É um débito técnico, neste tamanho não vai quebrar e dá pra ir atualizando as dependências, mas se o projeto for crescer no futuro, qualquer alteração em board impacta em cards e vice-versa.
-2. 
-3. Se cards tivesse os ids dos boards, poderia testar se um determinado board existe, porém cuidado ao apagar um board, atualizar a lista de ids, para evitar ids órfãos. 
+2. (especulativo) Se cards virasse um serviço separado, dependendo de boards, nasceria quebrado, pois quebraria antes a dependência e portanto não funcionaria.
+3. Se cards tivesse os ids dos boards, poderia testar se um determinado board existe, porém precisa ter cuidado ao apagar um board, precisa atualizar a lista de ids, para evitar ids órfãos. 
 
