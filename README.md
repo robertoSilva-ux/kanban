@@ -87,9 +87,22 @@ Na prática isso significa: **toda linha de código novo que vocês escreverem p
 Dica: implementem casos de uso simples e testáveis (retornam cedo em erro, uma responsabilidade por método) — fica mais fácil cobrir 100% dos branches sem casos artificiais.
 
 
-*** Discussão obrigatória (antes de codar)
+## Discussão obrigatória (antes de codar)
 
 1. É um débito técnico, neste tamanho não vai quebrar e dá pra ir atualizando as dependências, mas se o projeto for crescer no futuro, qualquer alteração em board impacta em cards e vice-versa.
 2. (especulativo) Se cards virasse um serviço separado, dependendo de boards, nasceria quebrado, pois quebraria antes a dependência e portanto não funcionaria.
 3. Se cards tivesse os ids dos boards, poderia testar se um determinado board existe, porém precisa ter cuidado ao apagar um board, precisa atualizar a lista de ids, para evitar ids órfãos. 
 
+## O Que Foi Realizado
+
+### Atividades Implementadas:
+- **Infraestrutura HTTP (PRG):** Suporte a redirecionamento (`RedirectResult` e `RenderResult`) em [`src/shared/http.ts`](src/shared/http.ts).
+- **Atividade 1 — Criar Cartão (`POST /cards`):** Validação de existência de coluna via [`BoardRepository`](src/boards/BoardRepository.ts), instanciação de [`Card.create`](src/cards/Card.ts), persistência em [`CardRepository`](src/cards/CardRepository.ts) e redirecionamento para `/`.
+- **Atividade 2 — Mover Cartão (`POST /cards/:id/move`):** Implementação de [`Card.changeColumn`](src/cards/Card.ts), validação de existência do cartão (404) e da coluna destino (404).
+- **Atividade 3 — Editar Cartão (`POST /cards/:id/update`):** Implementação de [`Card.rename`](src/cards/Card.ts) e [`Card.changePriority`](src/cards/Card.ts), permitindo atualização parcial ou completa (título, descrição, prioridade).
+- **Atividade 4 — Excluir Cartão (`POST /cards/:id/delete`):** Remoção de cartão via [`cardRepository.delete(id)`](src/cards/CardRepository.ts) e retorno com redirecionamento.
+- **Atividade 5 — Limite de WIP na Coluna:** Bloqueio de criação e movimentação caso a coluna destino atinja `wipLimit` com lançamento de `WipLimitExceededError` (HTTP 409).
+- **Atividade 6 — Impedir Título Duplicado na Mesma Coluna:** Verificação antes de criar, mover ou renomear cartão via `cardRepository.existsWithTitleInColumn(...)`, lançando `DuplicateCardTitleError` (HTTP 409).
+- **Atividade 7 — Criar Novas Colunas (`POST /columns`):** Implementação de [`Board.addColumn`](src/boards/Board.ts) e [`BoardController.createColumn`](src/boards/BoardController.ts).
+- **Jornada Completa E2E:** Implementação do teste de fluxo completo em [`test/e2e/board.e2e.test.ts`](test/e2e/board.e2e.test.ts).
+- **Extra:** criado form para alteração das colunas. 
